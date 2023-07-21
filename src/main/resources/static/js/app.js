@@ -14,6 +14,8 @@ function connectAndJoin(name) {
         stompClient.send("/app/join", {}, JSON.stringify({'name': name}));
     });
     console.log("웹소켓 연결에 성공하였습니다. ");
+
+
 }
 
 function join(name) {

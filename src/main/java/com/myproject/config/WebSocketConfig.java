@@ -18,30 +18,14 @@ import java.util.UUID;
 @Configuration
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-
     @Override
-    public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS()
-                .setInterceptors(new HandshakeInterceptor() {
-                    @Override
-                    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response,
-                                                   WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
-                        // 세션 ID 및 사용자 이름 설정
-                        attributes.put("sessionId", UUID.randomUUID().toString());
-                        attributes.put("username", "username"); // 실제 코드에서는 실제 사용자 이름을 설정해야 합니다.
-                        return true;
-                    }
-
-                    @Override
-                    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response,
-                                               WebSocketHandler wsHandler, Exception exception) {
-                    }
-                });
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/topic");
+        config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.setApplicationDestinationPrefixes("/app");
-        registry.enableSimpleBroker("/topic");   // Enables a simple in-memory broker
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        registry.addEndpoint("/ws").withSockJS();
     }
 }
